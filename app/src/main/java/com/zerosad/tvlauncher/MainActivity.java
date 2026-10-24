@@ -16,7 +16,6 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         web = new WebView(this);
         web.setBackgroundColor(0xFF000000);
-        web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
