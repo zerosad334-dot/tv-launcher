@@ -17,46 +17,48 @@ button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 #wp,#scrim,#home,.scr{position:absolute;inset:0}
 #scrim{background:#000}
 .hide{opacity:0;visibility:hidden}
-#clock{position:absolute;left:150px;top:80px;height:72px;line-height:72px;font-size:46px;font-weight:300;letter-spacing:1px;font-variant-numeric:tabular-nums}
+#clock{position:absolute;left:150px;top:74px;height:84px;padding:0 40px;border-radius:42px;display:flex;align-items:center;gap:28px;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 12px 30px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(40px) saturate(1.6);backdrop-filter:blur(40px) saturate(1.6);text-shadow:0 2px 8px rgba(0,0,0,.45)}
+#ct{font-size:42px;font-weight:400;letter-spacing:1px;white-space:nowrap}
+.cdv{width:1px;height:46px;background:rgba(255,255,255,.28)}
+.cdw{display:flex;flex-direction:column;gap:4px;font-size:24px;line-height:1.1;color:#e5e5ea;white-space:nowrap}
+.cwx{display:flex;align-items:center;gap:8px;color:#c7c7cc;font-size:22px}
 #top{position:absolute;right:150px;top:80px;display:flex;gap:32px}
-.tb,.tile{position:relative;transition:transform .16s cubic-bezier(.2,.7,.2,1);will-change:transform}
-.tb{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.tb,.tile{position:relative;transition:transform .38s cubic-bezier(.34,1.56,.64,1);will-change:transform}
+.tb{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(40px) saturate(1.6);backdrop-filter:blur(40px) saturate(1.6);display:flex;align-items:center;justify-content:center}
 .tile{width:156px;height:156px;border-radius:38px}
 .ic{position:absolute;inset:0;border-radius:inherit;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.18)}
-.tb::after,.tile::after,.th::after,.cd::after{content:"";position:absolute;inset:-6px;border-radius:44px;border:4px solid #fff;opacity:0;transition:opacity .16s;pointer-events:none}
+.tb::after,.tile::after,.th::after{content:"";position:absolute;inset:-6px;border-radius:44px;border:4px solid #fff;opacity:0;transition:opacity .16s;pointer-events:none}
 .tb::after{border-radius:50%}
 .tl2{position:absolute;left:-26px;right:-26px;top:168px;text-align:center;font-size:28px;color:#a1a1a6;white-space:nowrap;transition:color .16s}
 .tile.f .tl2{color:#fff;font-weight:600}
-.tb.f{transform:scale(1.14)}
-.tile.f{transform:scale(1.14) translateY(-8px)}
+.tb.f{transform:scale(1.22)}
+.tile.f{transform:scale(1.22) translateY(-16px)}
 .f::after{opacity:1}
 .ed .tile.f::after{border-style:dashed}
 #lab{position:absolute;left:0;right:0;bottom:392px;text-align:center;font-size:36px;font-weight:500;letter-spacing:.4px;min-height:40px}
-#dock{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);display:flex;gap:52px;padding:48px 64px 70px;border-radius:76px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 2px 6px rgba(0,0,0,.5),0 44px 90px rgba(0,0,0,.85)}
+#dock{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);display:flex;gap:52px;padding:48px 64px 70px;border-radius:76px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(50px) saturate(1.7);backdrop-filter:blur(50px) saturate(1.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.4),0 44px 90px rgba(0,0,0,.6)}
 #dock::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,0) 45%);pointer-events:none}
-.scr{opacity:0;visibility:hidden}
-.scr.on{opacity:1;visibility:visible;transition:opacity .2s}
-#drawer{background:rgba(0,0,0,.72)}
-#settings,#search{background:rgba(0,0,0,.62);display:flex;align-items:center;justify-content:center}
-#studio{background:rgba(0,0,0,.9)}
+.scr{opacity:0;visibility:hidden;transform:scale(1.05)}
+.scr.on{opacity:1;visibility:visible;transform:none;transition:opacity .3s,transform .45s cubic-bezier(.22,.8,.25,1)}
+@keyframes rise{from{opacity:0;transform:translateY(60px) scale(.85)}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(30px) scale(.93)}to{opacity:1}}
+.gd .tile{animation:rise .55s cubic-bezier(.22,.9,.3,1) backwards;animation-delay:calc(var(--i)*45ms)}
+.panel{animation:pop .45s cubic-bezier(.22,.9,.3,1) backwards}
+.row{transition:background .2s,transform .3s cubic-bezier(.34,1.56,.64,1)}.row.f{transform:translateX(10px)}
+#drawer{background:rgba(6,6,12,.5);-webkit-backdrop-filter:blur(60px) saturate(1.4);backdrop-filter:blur(60px) saturate(1.4)}
+#settings,#search{background:rgba(6,6,12,.5);-webkit-backdrop-filter:blur(60px) saturate(1.4);backdrop-filter:blur(60px) saturate(1.4);display:flex;align-items:center;justify-content:center}
+#studio{background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(40px);backdrop-filter:blur(40px)}
 #app{background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .hint{position:absolute;left:0;right:0;bottom:56px;margin:0;text-align:center;font-size:34px;color:#c7c7cc}
-.cds{position:absolute;inset:0;perspective:2400px}
-.cd{position:absolute;left:580px;top:230px;width:760px;height:500px;border-radius:44px;border:1px solid rgba(255,255,255,.16);box-shadow:0 40px 80px rgba(0,0,0,.6);text-align:left;transition:transform .3s cubic-bezier(.2,.7,.2,1);will-change:transform}
-.cd::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.2),transparent 45%)}
-.cd::after{border-radius:50px;box-shadow:0 0 80px 8px rgba(255,255,255,.28);transition:opacity .3s}
-.ch{position:absolute;left:36px;top:30px;display:flex;align-items:center;gap:18px;font-size:38px;font-weight:500}
-.mini{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center}
-.big{position:absolute;left:265px;top:185px;width:230px;height:230px;border-radius:62px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 20px 40px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
-.sh{position:absolute;inset:0;border-radius:inherit;background:#000;pointer-events:none;transition:opacity .3s}
-.panel{width:900px;padding:40px 44px 36px;border-radius:52px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 44px 90px rgba(0,0,0,.8)}
+.gd{position:absolute;left:190px;right:190px;top:250px;display:grid;grid-template-columns:repeat(5,156px);justify-content:space-between;gap:96px 0}
+.panel{width:900px;padding:40px 44px 36px;border-radius:52px;-webkit-backdrop-filter:blur(50px) saturate(1.6);backdrop-filter:blur(50px) saturate(1.6);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 44px 90px rgba(0,0,0,.8)}
 .panel h2{font-size:40px;font-weight:500;margin:0 0 24px}
 .row{width:100%;display:flex;justify-content:space-between;align-items:center;gap:24px;height:72px;padding:0 32px;margin-bottom:10px;border-radius:24px;background:rgba(255,255,255,.06);border:3px solid transparent;font-size:30px;text-align:left}
 .row.f{background:rgba(255,255,255,.17);border-color:#fff}
 .row>span:first-child{display:flex;align-items:center;gap:20px}
 .sw{width:84px;height:48px;border-radius:24px;background:#3a3a3c;position:relative;flex:none}
 .sw i{position:absolute;top:4px;left:4px;width:40px;height:40px;border-radius:50%;background:#fff;transition:transform .16s}
-.on .sw{background:#30d158}.on .sw i{transform:translateX(36px)}
+.row.on .sw{background:#30d158}.row.on .sw i{transform:translateX(36px)}
 .v,.chev{color:#a1a1a6}.chev{font-size:30px}
 .sub{font-size:30px;color:#a1a1a6;margin:0 0 20px}
 .note{font-size:28px;line-height:1.4;color:#a1a1a6;margin:14px 6px 0}
@@ -79,7 +81,7 @@ button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .big2{width:200px;height:200px;border-radius:52px;display:flex;align-items:center;justify-content:center;margin-bottom:30px;border:1px solid rgba(255,255,255,.18)}
 .at{font-size:40px;font-weight:500;margin:0}
 .ap{font-size:32px;color:#a1a1a6;margin:18px 0 0}
-.rm *,.rm{transition:none!important}
+.rm .scr{transform:none!important}.rm .row.f{transform:none!important}.rm,.rm *,.rm *::before,.rm *::after{transition:none!important;animation:none!important}.rm .tile.f,.rm .tb.f,.rm .th.f{transform:none!important}
 #pad{display:grid;grid-template-columns:repeat(3,96px);gap:12px;justify-content:center}
 .k{height:78px;border-radius:22px;background:#1c1c1e;font-size:26px}
 .k:active{background:#3a3a3c}
@@ -93,7 +95,7 @@ button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 <body>
 <div id="wrap"><div id="stage">
 <div id="wp"></div><div id="scrim"></div>
-<div id="home"><div id="clock"></div><div id="top"></div><div id="lab"></div><div id="dock"></div></div>
+<div id="home"><div id="clock"><span id="ct"></span><span class="cdv"></span><span class="cdw"><span id="cdt"></span><span class="cwx"><span id="cwi"></span><span id="cwt">24°C · Sunny</span></span></span></div><div id="top"></div><div id="lab"></div><div id="dock"></div></div>
 <div id="drawer" class="scr"></div><div id="settings" class="scr"></div><div id="search" class="scr"></div><div id="studio" class="scr"></div><div id="app" class="scr"></div>
 </div></div>
 <div id="pad">
@@ -104,11 +106,12 @@ button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 <div class="info"><b>Keyboard:</b> arrows, Enter, Esc. Tap anything to focus it. Hold OK on Home to rearrange the dock.<br><br>
 <b>Simulated in this prototype</b>
 <ul><li>No app launches. Every app opens a placeholder screen.</li>
-<li>Drawer cards are colour tiles, not live app previews.</li>
+<li>The app drawer is a standard grid of colour tiles, not live app previews.</li>
+<li>The weather on the clock is a placeholder (24°C, sunny). The real app will need a weather source.</li>
 <li>Wallpapers are built-in gradients. Upload from phone and Choose from TV storage are fake flows that add a generated wallpaper.</li>
 <li>Nothing reads files, pairs a phone or touches a TV. The original TCL launcher is never changed.</li></ul></div>
 <script>
-var I={play:'<path d="M8 5v14l11-7z"/>',live:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9M4.5 4.5a10.6 10.6 0 0 0 0 15M19.5 4.5a10.6 10.6 0 0 1 0 15"/>',film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M3 15h18M8 5v14M16 5v14"/>',music:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',photo:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-9 9"/>',input:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 11h10M7 14h6"/>',apps:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',pad:'<rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',cloud:'<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 11a3.5 3.5 0 0 1-.5 7z"/>',phone:'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',tv:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',set:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>'};
+var I={play:'<path d="M8 5v14l11-7z"/>',live:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9M4.5 4.5a10.6 10.6 0 0 0 0 15M19.5 4.5a10.6 10.6 0 0 1 0 15"/>',film:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M3 15h18M8 5v14M16 5v14"/>',music:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',photo:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-9 9"/>',input:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 11h10M7 14h6"/>',apps:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',pad:'<rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4M16 12h.01M18 14h.01"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',cloud:'<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 11a3.5 3.5 0 0 1-.5 7z"/>',phone:'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',tv:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',set:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>'};
 function ic(g,s){return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[g]+'</svg>'}
 function $(s){return document.querySelector(s)}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
@@ -125,7 +128,7 @@ var wps=[{n:'Upload from phone',k:'up',g:'phone'},{n:'Choose from TV storage',k:
 {n:'City Night',css:'radial-gradient(ellipse 60% 40% at 20% 98%,rgba(255,195,70,.65) 0,transparent 65%),radial-gradient(ellipse 55% 40% at 66% 92%,rgba(255,70,150,.6) 0,transparent 65%),radial-gradient(ellipse 55% 45% at 82% 14%,rgba(70,120,255,.7) 0,transparent 65%),linear-gradient(180deg,#070b22,#11174a 70%,#2e143c)'}];
 var SR=[['rm','Reduce motion','t'],['clock','Show clock','t'],['h24','24-hour clock','t'],['dim','Wallpaper dim','c'],['wps','Wallpaper Studio','l'],['reset','Reset dock order','a'],['rst','Reset prototype','a'],['about','About','i']];
 var DIM=['Low','Medium','High'],DIMV=[.1,.3,.5];
-var DEF={rm:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches),clock:true,h24:false};
+var DEF={rm:false,clock:true,h24:false};
 var S={scr:'home',stack:[],z:'d',i:2,t:0,oi:0,ed:false,snap:null,note:false,fake:null,lab:'',dim:0,wp:2,app:null,set:Object.assign({},DEF)};
 var ft=0,lt=0,upn=0,tvn=0;
 function bg(a){return 'background:linear-gradient(150deg,'+a.c[0]+','+a.c[1]+')'}
@@ -139,7 +142,7 @@ function order(arr,i){dock=arr.slice();layout();S.i=i}
 function mv(d){var j=S.i+d;if(S.i>5||j<0||j>5)return;var a=dock.slice();a[S.i]=dock[j];a[j]=dock[S.i];order(a,j)}
 function flash(m){S.lab=m;clearTimeout(lt);lt=setTimeout(function(){S.lab='';render()},1400)}
 function build(){var s=S.scr,h='';
-if(s==='drawer'){h='<div class="cds">'+A.map(function(a,k){return '<button class="cd" tabindex="-1" data-k="cd" data-i="'+k+'" aria-label="'+a.n+'" style="'+bg(a)+'"><span class="ch"><span class="mini">'+ic(a.g,34)+'</span>'+a.n+'</span><span class="big">'+ic(a.g,110)+'</span><i class="sh"></i></button>'}).join('')+'</div><p class="hint">← → browse · OK open · Back to Home</p>'}
+if(s==='drawer'){h='<h2 class="sth">All apps</h2><div class="gd">'+A.map(function(a,k){return '<button class="tile" tabindex="-1" data-k="cd" data-i="'+k+'" style="--i:'+k+'" aria-label="'+a.n+'"><span class="ic" style="'+bg(a)+'">'+ic(a.g,64)+'</span><span class="tl2">'+a.n+'</span></button>'}).join('')+'</div><p class="hint">\u2190 \u2192 \u2191 \u2193 browse \u00b7 OK open \u00b7 Back to Home</p>'}
 if(s==='settings'){h='<div class="panel"><h2>Settings</h2>'+SR.map(function(r,k){var v=r[2]==='t'?'<span class="sw"><i></i></span>':r[2]==='c'?'<span class="v">'+DIM[S.dim]+'</span>':r[2]==='l'?'<span class="chev">›</span>':r[2]==='i'?'<span class="chev">'+(S.note?'▴':'▾')+'</span>':'';return '<button class="row'+(r[2]==='t'&&S.set[r[0]]?' on':'')+'" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+r[1]+'</span>'+v+'</button>'}).join('')+(S.note?'<p class="note">Prototype only. The original TCL launcher is never disabled, replaced or removed, and nothing here changes your TV.</p>':'')+'</div>'}
 if(s==='search'){h='<div class="panel"><h2>Search</h2><p class="sub">Voice search is simulated. Pick a suggestion.</p>'+A.slice(0,5).map(function(a,k){return '<button class="row" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+ic(a.g,36)+a.n+'</span></button>'}).join('')+'</div>'}
 if(s==='studio'){h='<h2 class="sth">Wallpaper Studio</h2><div id="pv"><div id="pvb"></div><div id="pvs"></div><div id="pk"></div><div id="pt"><i></i><i></i></div><div id="pd">'+dock.map(function(a){return '<i style="'+bg(a)+'"></i>'}).join('')+'</div><div id="pm"></div></div><div id="wl"></div><div class="stw"><div class="strip">'+wps.map(function(w,k){return '<button class="th'+(w.k?' tl':'')+'" tabindex="-1" data-k="th" data-i="'+k+'" style="'+(w.k?'':'background:'+bgOf(w))+'">'+(w.k?ic(w.g,44)+'<span>'+w.n+'</span>':'')+'</button>'}).join('')+'</div></div><p class="hint">Simulated: no real pictures are read in this prototype.</p>'}
@@ -168,7 +171,7 @@ else if(k==='ok'){if(S.z==='t')go(S.t?'settings':'search');else if(dock[S.i]===A
 function press(k){var s=S.scr,n;
 if(k==='b')back();
 else if(s==='home')home(k);
-else if(s==='drawer'){if(k==='l'||k==='r')S.oi=clamp(S.oi+(k==='l'?-1:1),0,A.length-1);else if(k==='ok'){S.app=A[S.oi];go('app')}}
+else if(s==='drawer'){if(k==='l'||k==='r')S.oi=clamp(S.oi+(k==='l'?-1:1),0,A.length-1);else if(k==='u'||k==='d')S.oi=clamp(S.oi+(k==='u'?-5:5),0,A.length-1);else if(k==='ok'){S.app=A[S.oi];go('app')}}
 else if(s==='settings'||s==='search'){n=(s==='settings'?SR.length:5)-1;if(k==='u'||k==='d')S.oi=clamp(S.oi+(k==='u'?-1:1),0,n);else if(k==='ok'){if(s==='settings')setAct();else{S.app=A[S.oi];go('app')}}}
 else if(s==='studio'){if(k==='l'||k==='r')S.oi=clamp(S.oi+(k==='l'?-1:1),0,wps.length-1);else if(k==='ok'){var w=wps[S.oi];if(w.k)fake(w.k);else{S.wp=S.oi;applyWp()}}}
 else if(s==='app'){if(k==='ok')back()}
@@ -180,10 +183,10 @@ tiles.forEach(function(t,k){t.classList.toggle('f',s==='home'&&S.z==='d'&&k===S.
 tops.forEach(function(t,k){t.classList.toggle('f',s==='home'&&S.z==='t'&&k===S.t)});
 $('#dock').classList.toggle('ed',S.ed);
 $('#lab').textContent=S.lab||(S.ed?'← → move · OK drop · Back cancel':(S.z==='d'?'':(S.t?'Settings':'Search')));
-if(s==='drawer')document.querySelectorAll('.cd').forEach(function(c,k){var d=k-S.oi,a=Math.abs(d),g=d<0?-1:1,x=a?g*[0,400,640,800,880][Math.min(a,4)]:0;c.style.transform='translateX('+x+'px) rotateY('+(a?-g*30:0)+'deg) scale('+(a?(a===1?.86:a===2?.76:.68):1.06)+')';c.style.zIndex=50-a;c.style.opacity=a>3?0:1;c.classList.toggle('f',!a);c.lastElementChild.style.opacity=a?Math.min(.28+a*.12,.7):0});
+if(s==='drawer')document.querySelectorAll('#drawer .tile').forEach(function(c,k){c.classList.toggle('f',k===S.oi)});
 if(s==='settings'||s==='search')document.querySelectorAll('#'+s+' .row').forEach(function(r,k){r.classList.toggle('f',k===S.oi)});
-if(s==='studio'){var w=wps[S.oi],pw=w.k?wps[S.wp]:w;$('.strip').style.transform='translateX('+(-S.oi*316)+'px)';document.querySelectorAll('.th').forEach(function(t,k){t.classList.toggle('f',k===S.oi);t.classList.toggle('ac',k===S.wp)});$('#pvb').style.background=bgOf(pw);$('#pvs').style.opacity=DIMV[S.dim];$('#pv').classList.toggle('busy',!!S.fake);$('#pm').textContent=S.fake||'';$('#pk').textContent=$('#clock').textContent;$('#pk').style.display=S.set.clock?'':'none';$('#wl').textContent=w.k?w.n+' · OK to start (simulated)':w.n+(S.oi===S.wp?' · Active':' · OK to apply')}
-$('#clock').style.display=S.set.clock?'block':'none';
+if(s==='studio'){var w=wps[S.oi],pw=w.k?wps[S.wp]:w;$('.strip').style.transform='translateX('+(-S.oi*316)+'px)';document.querySelectorAll('.th').forEach(function(t,k){t.classList.toggle('f',k===S.oi);t.classList.toggle('ac',k===S.wp)});$('#pvb').style.background=bgOf(pw);$('#pvs').style.opacity=DIMV[S.dim];$('#pv').classList.toggle('busy',!!S.fake);$('#pm').textContent=S.fake||'';$('#pk').textContent=$('#ct').textContent;$('#pk').style.display=S.set.clock?'':'none';$('#wl').textContent=w.k?w.n+' · OK to start (simulated)':w.n+(S.oi===S.wp?' · Active':' · OK to apply')}
+$('#clock').style.display=S.set.clock?'flex':'none';
 document.body.classList.toggle('rm',S.set.rm)}
 $('#stage').onclick=function(e){var el=e.target.closest('[data-k]');if(!el)return;var k=el.dataset.k,i=+el.dataset.i;
 if(k==='tile'){S.z='d';S.i=i;press('ok')}
@@ -194,7 +197,7 @@ document.querySelectorAll('.k').forEach(function(b){var tm,lp=false;
 if(b.dataset.k==='ok'){b.onpointerdown=function(){lp=false;tm=setTimeout(function(){lp=true;press('hold')},600)};b.onpointerup=b.onpointerleave=function(){clearTimeout(tm)}}
 b.onclick=function(){if(lp){lp=false;return}press(b.dataset.k)}});
 document.addEventListener('keydown',function(e){var m={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',Enter:'ok',Escape:'b',Backspace:'b',e:'hold'}[e.key];if(m){e.preventDefault();if(!e.repeat||'lrud'.indexOf(m)>-1)press(m)}});
-function tick(){$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:!S.set.h24})}
+function tick(){var d=new Date();$('#ct').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:!S.set.h24});$('#cdt').textContent=d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'short'});$('#cwi').innerHTML=ic('sun',26)}
 tick();setInterval(tick,30000);
 var w0=$('#wrap'),st=$('#stage');function fit(){var s=w0.clientWidth/1920;st.style.transform='scale('+s+')';w0.style.height=(1080*s)+'px'}
 new ResizeObserver(fit).observe(w0);fit();applyWp();render();
