@@ -46,6 +46,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,6 +64,8 @@ import java.util.Map;
 
 public class MainActivity extends Activity {
     private WebView web;
+    private volatile ServerSocket upSrv;
+    private volatile boolean upRun = false;
     private final Handler handler = new Handler();
     private final Runnable reloadTask = new Runnable() {
         public void run() {
@@ -108,6 +119,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        stopUp();
         try {
             unregisterReceiver(pkgReceiver);
         } catch (Exception ignored) {
@@ -130,6 +142,97 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void stopUp() {
+        upRun = false;
+        try {
+            if (upSrv != null) upSrv.close();
+        } catch (Exception ignored) {
+        }
+        upSrv = null;
+    }
+
+    private static final String PAGE = "<!doctype html><meta name='viewport' content='width=device-width,initial-scale=1'><title>Send to TV</title>"
+            + "<body style='font-family:sans-serif;background:#111;color:#fff;text-align:center;padding:40px 20px'>"
+            + "<h2>Send a wallpaper to your TV</h2><p>Pick a photo from your phone.</p>"
+            + "<input type='file' id='f' accept='image/*' style='margin:20px'><p id='s'></p><script>"
+            + "f.onchange=function(){var file=f.files[0];if(!file)return;s.textContent='Preparing...';var img=new Image();"
+            + "img.onload=function(){var sc=Math.min(1,1920/Math.max(img.width,img.height)),c=document.createElement('canvas');"
+            + "c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);"
+            + "c.toBlob(function(b){s.textContent='Sending...';fetch('/up',{method:'POST',body:b}).then(function(r){return r.text()})"
+            + ".then(function(t){s.textContent=t=='ok'?'Done! Check your TV.':'Failed: '+t}).catch(function(){s.textContent='Failed. Is the TV still on?'})},'image/jpeg',0.85)};"
+            + "img.onerror=function(){s.textContent='Could not read that image'};img.src=URL.createObjectURL(file)};"
+            + "</script></body>";
+
+    private void reply(OutputStream o, int code, String type, byte[] body) throws Exception {
+        String head = "HTTP/1.1 " + code + (code == 200 ? " OK" : " Error") + "\r\nContent-Type: " + type
+                + "\r\nContent-Length: " + body.length + "\r\nConnection: close\r\n\r\n";
+        o.write(head.getBytes("UTF-8"));
+        o.write(body);
+        o.flush();
+    }
+
+    private void serve(Socket sk) {
+        try {
+            sk.setSoTimeout(15000);
+            InputStream in = sk.getInputStream();
+            OutputStream out = sk.getOutputStream();
+            ByteArrayOutputStream hb = new ByteArrayOutputStream();
+            int m = 0;
+            int ch;
+            while (hb.size() < 8192 && (ch = in.read()) != -1) {
+                hb.write(ch);
+                if ((ch == 13 && (m == 0 || m == 2)) || (ch == 10 && (m == 1 || m == 3))) m++;
+                else m = (ch == 13) ? 1 : 0;
+                if (m == 4) break;
+            }
+            String head = hb.toString("UTF-8");
+            String first = head.split("\r\n")[0];
+            int len = 0;
+            for (String line : head.split("\r\n")) {
+                if (line.toLowerCase().startsWith("content-length:")) len = Integer.parseInt(line.substring(15).trim());
+            }
+            if (first.startsWith("POST /up")) {
+                if (len <= 0 || len > 12000000) {
+                    reply(out, 400, "text/plain", "too big".getBytes("UTF-8"));
+                } else {
+                    byte[] data = new byte[len];
+                    int got = 0;
+                    while (got < len) {
+                        int r = in.read(data, got, len - got);
+                        if (r < 0) break;
+                        got += r;
+                    }
+                    Bitmap b = BitmapFactory.decodeByteArray(data, 0, got);
+                    if (b == null) {
+                        reply(out, 400, "text/plain", "not an image".getBytes("UTF-8"));
+                    } else {
+                        float sc = Math.min(1f, 1920f / Math.max(b.getWidth(), b.getHeight()));
+                        if (sc < 1f) b = Bitmap.createScaledBitmap(b, Math.round(b.getWidth() * sc), Math.round(b.getHeight() * sc), true);
+                        FileOutputStream fo = openFileOutput("wp.jpg", Context.MODE_PRIVATE);
+                        b.compress(Bitmap.CompressFormat.JPEG, 85, fo);
+                        fo.close();
+                        reply(out, 200, "text/plain", "ok".getBytes("UTF-8"));
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                web.evaluateJavascript("window.onUpload&&onUpload()", null);
+                            }
+                        });
+                    }
+                }
+            } else if (first.startsWith("GET / ")) {
+                reply(out, 200, "text/html; charset=utf-8", PAGE.getBytes("UTF-8"));
+            } else {
+                reply(out, 404, "text/plain", "no".getBytes("UTF-8"));
+            }
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                sk.close();
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     private class Bridge {
@@ -261,10 +364,18 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public String openNotifAccess() {
             try {
-                startActivity(newTask(new Intent("android.settings.NOTIFICATION_LISTENER_SETTINGS")));
+                startActivity(newTask(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)));
                 return "ok";
-            } catch (Exception e) {
-                return "err";
+            } catch (Exception e1) {
+                try {
+                    Intent d = new Intent("android.settings.NOTIFICATION_LISTENER_DETAIL_SETTINGS");
+                    d.putExtra("android.provider.extra.NOTIFICATION_LISTENER_COMPONENT_NAME",
+                            new ComponentName(MainActivity.this, NotifService.class).flattenToString());
+                    startActivity(newTask(d));
+                    return "ok";
+                } catch (Exception e2) {
+                    return "err";
+                }
             }
         }
 
@@ -537,6 +648,88 @@ public class MainActivity extends Activity {
             } catch (Exception e) {
                 return "";
             }
+        }
+
+        @JavascriptInterface
+        public void requestWeather() {
+            new Thread(new Runnable() {
+                public void run() {
+                    String out = "";
+                    try {
+                        URL u = new URL("https://api.open-meteo.com/v1/forecast?latitude=-1.2864&longitude=36.8172&current=temperature_2m,weather_code");
+                        HttpURLConnection c = (HttpURLConnection) u.openConnection();
+                        c.setConnectTimeout(8000);
+                        c.setReadTimeout(8000);
+                        InputStream is = c.getInputStream();
+                        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                        byte[] buf = new byte[4096];
+                        int n;
+                        while ((n = is.read(buf)) > 0) bo.write(buf, 0, n);
+                        is.close();
+                        out = bo.toString("UTF-8");
+                    } catch (Exception ignored) {
+                    }
+                    final String js = "window.onWeather&&onWeather(" + JSONObject.quote(out) + ")";
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            web.evaluateJavascript(js, null);
+                        }
+                    });
+                }
+            }).start();
+        }
+
+        @JavascriptInterface
+        public String startUpload() {
+            try {
+                stopUp();
+                String ip = null;
+                Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+                while (en != null && en.hasMoreElements() && ip == null) {
+                    NetworkInterface ni = en.nextElement();
+                    if (!ni.isUp() || ni.isLoopback()) continue;
+                    Enumeration<InetAddress> ad = ni.getInetAddresses();
+                    while (ad.hasMoreElements()) {
+                        InetAddress a = ad.nextElement();
+                        if (a instanceof Inet4Address && !a.isLoopbackAddress()) {
+                            ip = a.getHostAddress();
+                            break;
+                        }
+                    }
+                }
+                if (ip == null) return "";
+                ServerSocket ss;
+                int port = 8080;
+                try {
+                    ss = new ServerSocket(port);
+                } catch (Exception e) {
+                    port = 8181;
+                    ss = new ServerSocket(port);
+                }
+                upSrv = ss;
+                upRun = true;
+                final ServerSocket fs = ss;
+                new Thread(new Runnable() {
+                    public void run() {
+                        while (upRun && !fs.isClosed()) {
+                            try {
+                                Socket sk = fs.accept();
+                                serve(sk);
+                            } catch (Exception e) {
+                                if (fs.isClosed()) break;
+                            }
+                        }
+                    }
+                }).start();
+                return "http://" + ip + ":" + port;
+            } catch (Exception e) {
+                return "";
+            }
+        }
+
+        @JavascriptInterface
+        public void stopUpload() {
+            stopUp();
         }
     }
 }
