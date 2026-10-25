@@ -98,7 +98,7 @@ body.tv{padding:0;gap:0;justify-content:center;min-height:100vh;overflow:hidden}
 .tv #clock,.tv .tb,.tv #dock,.tv .panel,.tv #np{background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
 .tv .ic{box-shadow:none}
 .tv #lab,.tv .sth,.tv #wl{text-shadow:0 2px 6px rgba(0,0,0,.85)}
-.tv #drawer,.tv #settings,.tv #custom,.tv #menu,.tv #search{background:rgba(8,10,20,.86)}
+.tv #drawer,.tv #settings,.tv #custom,.tv #menu,.tv #dockedit,.tv #upload,.tv #search{background:rgba(8,10,20,.86)}
 .tv #studio{background:rgba(0,0,0,.88)}
 .tv .scr{transform:none}
 .ic .bn{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
@@ -115,7 +115,10 @@ body.tv{padding:0;gap:0;justify-content:center;min-height:100vh;overflow:hidden}
 .tile{width:calc(185px*var(--ds));height:calc(116px*var(--ds));border-radius:var(--r)}
 .tl2{top:calc(128px*var(--ds))}
 .gd .tile{width:276px;height:172px;border-radius:34px}.gd .tl2{top:186px}
-#settings,#custom,#menu,#search{background:rgba(6,6,12,.5);display:flex;align-items:center;justify-content:center}
+#settings,#custom,#menu,#dockedit,#upload,#search{background:rgba(6,6,12,.5);display:flex;align-items:center;justify-content:center}
+#search{align-items:flex-start;padding-top:36px}
+.row.gr{background:rgba(48,209,88,.35)}
+.url{font-size:44px;font-weight:600;padding:22px 30px;border-radius:24px;background:rgba(255,255,255,.1);margin:6px 0 18px;word-break:break-all}
 .panel.narrow{width:640px}
 .row{height:66px;margin-bottom:8px}
 .row>span:first-child{min-width:0;overflow:hidden;white-space:nowrap}
@@ -124,7 +127,7 @@ body.tv{padding:0;gap:0;justify-content:center;min-height:100vh;overflow:hidden}
 .row img.ia{width:40px;height:40px;object-fit:contain;border-radius:9px;flex:none}
 #q{display:block;width:100%;height:76px;border-radius:38px;border:3px solid transparent;background:rgba(255,255,255,.1);color:#fff;font-size:32px;padding:0 32px;outline:0;margin-bottom:18px;font-family:inherit}
 #q.f{border-color:#fff;background:rgba(255,255,255,.17)}
-#toast{position:absolute;left:50%;top:190px;transform:translateX(-50%);padding:16px 34px;border-radius:30px;font-size:30px;background:rgba(20,24,40,.94);border:1px solid rgba(255,255,255,.22);opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;white-space:nowrap}
+#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);padding:16px 34px;border-radius:30px;font-size:30px;background:rgba(20,24,40,.94);border:1px solid rgba(255,255,255,.22);opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;white-space:nowrap}
 #toast.on{opacity:1}
 #np{position:absolute;left:510px;top:290px;width:900px;padding:28px;border-radius:44px;display:none;flex-direction:column;gap:18px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(50px) saturate(1.7);backdrop-filter:blur(50px) saturate(1.7);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 20px 50px rgba(0,0,0,.4)}
 #np.on{display:flex}
@@ -146,7 +149,7 @@ body.tv{padding:0;gap:0;justify-content:center;min-height:100vh;overflow:hidden}
 <div id="home"><div id="clock"><span id="ct"></span><span class="cdv"></span><span class="cdw"><span id="cdt"></span><span class="cwx"><span id="cwi"></span><span id="cwt"></span></span></span></div><div id="top"></div>
 <div id="np"><div class="npm"><div id="npa"></div><div class="npi"><div id="npn"></div><div id="npti"></div><div id="npar"></div><div class="npc"><span id="npb"></span><span id="npp"></span><span id="npf"></span></div></div></div><div id="npx"></div></div>
 <div id="lab"></div><div id="dock"></div></div>
-<div id="drawer" class="scr"></div><div id="settings" class="scr"></div><div id="custom" class="scr"></div><div id="menu" class="scr"></div><div id="search" class="scr"></div><div id="studio" class="scr"></div><div id="app" class="scr"></div>
+<div id="drawer" class="scr"></div><div id="settings" class="scr"></div><div id="custom" class="scr"></div><div id="menu" class="scr"></div><div id="dockedit" class="scr"></div><div id="upload" class="scr"></div><div id="search" class="scr"></div><div id="studio" class="scr"></div><div id="app" class="scr"></div>
 <div id="toast"></div>
 </div></div>
 <div id="pad">
@@ -181,14 +184,14 @@ var DEF={rm:false,clock:true,h24:false,weather:true,np:true},CUS0={tint:0,dsi:1,
 var DIM=['Low','Medium','High'],DIMV=[.1,.3,.5];
 var TINT=[['Midnight','rgba(60,80,120,.5)','rgba(25,35,70,.45)'],['Violet','rgba(95,70,150,.52)','rgba(40,25,80,.48)'],['Teal','rgba(40,120,120,.5)','rgba(10,45,55,.48)'],['Rose','rgba(150,70,100,.5)','rgba(70,25,50,.48)'],['Graphite','rgba(80,84,92,.55)','rgba(28,30,36,.5)']];
 var DSN=['Compact','Normal','Large'],DSV=[.86,1,1.1];
-var S={scr:'home',stack:[],z:'d',i:0,t:0,oi:0,ed:false,snap:null,dim:saved.dim||0,wp:saved.wp==null?2:saved.wp,photo:!!saved.photo,wpId:saved.wpId||0,wpData:'',app:null,q:'',photos:[],perm:null,np:null,npArt:'',npKey:'',npTry:0,notes:[],
+var S={scr:'home',stack:[],z:'d',i:0,t:0,oi:0,ed:false,snap:null,dim:saved.dim||0,wp:saved.wp==null?2:saved.wp,photo:!!saved.photo,img:!!(saved.img||saved.photo),manage:false,pick:false,grab:false,upUrl:'',wpId:saved.wpId||0,wpData:'',app:null,q:'',photos:[],perm:null,np:null,npArt:'',npKey:'',npTry:0,notes:[],
 set:Object.assign({},DEF,saved.set||{}),cus:Object.assign({},CUS0,saved.cus||{})};
 var W=null,curBg='',qi=null,tt=0;
 var D0=A.slice(0,6);
 var DA=D0;
 if(saved.dock&&saved.dock.length){DA=saved.dock.map(function(k){return A.filter(function(a){return keyOf(a)===k})[0]}).filter(function(a){return a});if(DA.length<2)DA=D0}
 var dock=DA.slice(0,6).concat([APPS]),orig=D0.concat([APPS]);
-function save(){jx(function(){localStorage.setItem(KEY,JSON.stringify({set:S.set,dim:S.dim,wp:S.wp,photo:S.photo,wpId:S.wpId,cus:S.cus,dock:dock.filter(function(a){return a!==APPS}).map(keyOf)}))})}
+function save(){jx(function(){localStorage.setItem(KEY,JSON.stringify({set:S.set,dim:S.dim,wp:S.wp,photo:S.photo,img:S.img,wpId:S.wpId,cus:S.cus,dock:dock.filter(function(a){return a!==APPS}).map(keyOf)}))})}
 function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('on')},2400)}
 function bg(a){return 'background:linear-gradient(150deg,'+a.c[0]+','+a.c[1]+')'}
 function applyWp(){var w=$('#wp');curBg=(S.photo&&S.wpData)?'#000 url('+S.wpData+') center/cover no-repeat':P[clamp(S.wp,0,P.length-1)].css;w.style.background=curBg;$('#scrim').style.opacity=DIMV[S.dim]}
@@ -203,44 +206,53 @@ function mv(d){var last=dock.length-2,j=S.i+d;if(S.i>last||j<0||j>last)return;va
 function tvSettings(){if(AN){if(jx(function(){return Android.openTvSettings()},'err')!=='ok')toast("Couldn't open TV settings")}else toast('TV settings open on the TV app')}
 function openWeb(u){if(AN){if(!jx(function(){return Android.openUrl(u)},false))toast('No browser found on this TV')}else toast('Would open '+u)}
 function settingsRows(){return [['cus','Customise','l'],['rm','Reduce motion','t'],['clock','Show clock','t'],['h24','24-hour clock','t'],['wps','Wallpaper Studio','l'],['dim','Wallpaper dim','c'],['tvs','TV settings','l'],['nac','Now Playing and notifications','c'],['reset','Reset dock order','a'],['rst','Reset launcher','a']]}
-var CR=[['tint','Glass tint','c'],['dsi','Dock size','c'],['rd','Corners','c'],['weather','Show weather','t'],['np','Show Now Playing','t']];
+var CR=[['edit','Edit dock','l'],['manage','Manage apps and uninstall','l'],['tint','Glass tint','c'],['dsi','Dock size','c'],['rd','Corners','c'],['weather','Show weather','t'],['np','Show Now Playing','t']];
 function menuRows(){var a=S.app;return [['open','Open'],['dock',dock.indexOf(a)>-1?'Remove from dock':'Add to dock'],['un','Uninstall']]}
 function rowVal(s,k){if(s==='settings'){if(k==='dim')return DIM[S.dim];if(k==='nac')return S.perm?'On':'Turn on'}else{if(k==='tint')return TINT[S.cus.tint][0];if(k==='dsi')return DSN[S.cus.dsi];if(k==='rd')return S.cus.rd?'Round':'Soft'}return ''}
 function rowHTML(s,r,k){var v=r[2]==='t'?'<span class="sw"><i></i></span>':r[2]==='l'?'<span class="chev">›</span>':r[2]==='c'?'<span class="v">'+rowVal(s,r[0])+'</span>':'';return '<button class="row'+(r[2]==='t'&&S.set[r[0]]?' on':'')+'" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+r[1]+'</span>'+v+'</button>'}
 function results(){var q=S.q.trim(),ql=q.toLowerCase(),r=[];
 if(q){if(/^https?:\/\/\S+$/i.test(q)||/^[^\s\/]+\.[a-z]{2,}(\/\S*)?$/i.test(q))r.push({k:'url',t:'Open '+q,v:/^https?:\/\//i.test(q)?q:'https://'+q,g:'globe'});r.push({k:'web',t:'Search Google for “'+q+'”',g:'search'})}
-A.filter(function(a){return !q||a.n.toLowerCase().indexOf(ql)>-1}).slice(0,q?5:6).forEach(function(a){r.push({k:'app',a:a,t:a.n})});return r}
+A.filter(function(a){return !q||a.n.toLowerCase().indexOf(ql)>-1}).slice(0,q?3:5).forEach(function(a){r.push({k:'app',a:a,t:a.n})});return r}
 function fillSearch(){var R=results(),h=R.map(function(x,k){return '<button class="row'+(k===S.oi?' f':'')+'" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+(x.k==='app'?aic(x.a,36):ic(x.g,36))+x.t+'</span></button>'}).join('');$('#sr').innerHTML=h||'<p class="sub">No matches. Press OK to search Google.</p>'}
 function focusQ(){if(qi){qi.focus();if(AN)jx(function(){Android.showKeyboard()})}}
-function sitems(){var r=[{k:'tv',n:'From TV storage',g:'tv'},{k:'ph',n:'Send from phone',g:'phone'}];P.forEach(function(p,i){r.push({k:'p',i:i,n:p.n,css:p.css})});S.photos.forEach(function(p){r.push({k:'img',id:p.id,n:p.n,th:p.th||''})});return r}
-function activeIdx(){var it=sitems();for(var i=0;i<it.length;i++){var x=it[i];if(x.k==='p'&&!S.photo&&x.i===S.wp)return i;if(x.k==='img'&&S.photo&&String(x.id)===String(S.wpId))return i}return 2}
+function hasCur(){return S.img&&!!S.wpData}
+function base(){return 2+(hasCur()?1:0)}
+function sitems(){var r=[{k:'tv',n:'From TV storage',g:'tv'},{k:'ph',n:'Send from phone',g:'phone'}];if(hasCur())r.push({k:'cur',n:'Your photo'});P.forEach(function(p,i){r.push({k:'p',i:i,n:p.n,css:p.css})});S.photos.forEach(function(p){r.push({k:'img',id:p.id,n:p.n,th:p.th||''})});return r}
+function activeIdx(){var it=sitems();for(var i=0;i<it.length;i++){var x=it[i];if(x.k==='cur'&&S.photo&&String(S.wpId)==='phone')return i;if(x.k==='p'&&!S.photo&&x.i===S.wp)return i;if(x.k==='img'&&S.photo&&String(x.id)===String(S.wpId))return i}return 2}
 function build(){var s=S.scr,h='';
-if(s==='drawer'){h='<h2 class="sth">All apps</h2><div class="gd">'+A.map(function(a,k){return '<button class="tile" tabindex="-1" data-k="cd" data-i="'+k+'" style="--i:'+k+'" aria-label="'+a.n+'"><span class="ic" style="'+bg(a)+'">'+aic(a,64)+'</span><span class="tl2">'+a.n+'</span></button>'}).join('')+'</div>'}
+if(s==='drawer'){h='<h2 class="sth">'+(S.pick?'Add to dock':S.manage?'Manage apps':'All apps')+'</h2><div class="gd">'+A.map(function(a,k){return '<button class="tile" tabindex="-1" data-k="cd" data-i="'+k+'" style="--i:'+k+'" aria-label="'+a.n+'"><span class="ic" style="'+bg(a)+'">'+aic(a,64)+'</span><span class="tl2">'+a.n+'</span></button>'}).join('')+'</div>'}
 if(s==='settings'){h='<div class="panel"><h2>Settings</h2>'+settingsRows().map(function(r,k){return rowHTML('settings',r,k)}).join('')+'</div>'}
 if(s==='custom'){h='<div class="panel"><h2>Customise</h2>'+CR.map(function(r,k){return rowHTML('custom',r,k)}).join('')+'</div>'}
+if(s==='dockedit'){var rl=dock.length-1;h='<div class="panel"><h2>Edit dock</h2><p class="sub">OK to pick up and move. Hold OK to remove.</p>'+dock.slice(0,rl).map(function(a,k){return '<button class="row'+(S.grab&&k===S.oi?' gr':'')+'" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+aic(a,36)+a.n+'</span><span class="v">'+(k+1)+'</span></button>'}).join('')+'<button class="row" tabindex="-1" data-k="row" data-i="'+rl+'"><span>'+ic('apps',36)+'Add app</span><span class="chev">›</span></button></div>'}
+if(s==='upload'){h='<div class="panel"><h2>Send a photo from your phone</h2><p class="sub">1. Connect your phone to the same Wi-Fi as this TV.</p><p class="sub">2. Open this address in your phone browser:</p><div class="url">'+S.upUrl+'</div><p class="note" id="upst">Waiting for a photo. Press Back to cancel.</p></div>'}
 if(s==='menu'){h='<div class="panel narrow"><h2>'+S.app.n+'</h2>'+menuRows().map(function(r,k){return '<button class="row" tabindex="-1" data-k="row" data-i="'+k+'"><span>'+r[1]+'</span></button>'}).join('')+'</div>'}
-if(s==='search'){h='<div class="panel"><h2>Search</h2><input id="q" type="text" placeholder="Search Google or type a URL" autocomplete="off" autocorrect="off" spellcheck="false"><div id="sr"></div></div>'}
-if(s==='studio'){var it=sitems();h='<h2 class="sth">Wallpaper Studio</h2><div id="pv"><div id="pvb"></div><div id="pvs"></div><div id="pk"></div><div id="pt"><i></i><i></i></div><div id="pd">'+dock.map(function(a){return '<i style="'+bg(a)+'"></i>'}).join('')+'</div></div><div id="wl"></div><div class="stw"><div class="strip">'+it.map(function(w,k){var tl=(w.k==='tv'||w.k==='ph'),st=tl?'':'background:'+(w.k==='p'?w.css:(w.th?'#222 url('+w.th+') center/cover':'#222'));return '<button class="th'+(tl?' tl':'')+'" tabindex="-1" data-k="th" data-i="'+k+'"'+(w.k==='img'?' data-id="'+w.id+'"':'')+' style="'+st+'">'+(tl?ic(w.g,44)+'<span>'+w.n+'</span>':'')+'</button>'}).join('')+'</div></div>'}
+if(s==='search'){h='<div class="panel"><input id="q" type="text" placeholder="Search Google or type a URL" autocomplete="off" autocorrect="off" spellcheck="false"><div id="sr"></div></div>'}
+if(s==='studio'){var it=sitems();h='<h2 class="sth">Wallpaper Studio</h2><div id="pv"><div id="pvb"></div><div id="pvs"></div><div id="pk"></div><div id="pt"><i></i><i></i></div><div id="pd">'+dock.map(function(a){return '<i style="'+bg(a)+'"></i>'}).join('')+'</div></div><div id="wl"></div><div class="stw"><div class="strip">'+it.map(function(w,k){var tl=(w.k==='tv'||w.k==='ph'),st=tl?'':'background:'+(w.k==='p'?w.css:w.k==='cur'?'#222 url('+S.wpData+') center/cover':(w.th?'#222 url('+w.th+') center/cover':'#222'));return '<button class="th'+(tl?' tl':'')+'" tabindex="-1" data-k="th" data-i="'+k+'"'+(w.k==='img'?' data-id="'+w.id+'"':'')+' style="'+st+'">'+(tl?ic(w.g,44)+'<span>'+w.n+'</span>':'')+'</button>'}).join('')+'</div></div>'}
 if(s==='app'){var a=S.app;h='<div class="big2" style="'+bg(a)+'">'+aic(a,110)+'</div><h2 class="at">'+a.n+'</h2><p class="ap">Placeholder screen. Press OK or Back to return.</p>'}
 if(s!=='home')$('#'+s).innerHTML=h;
 if(s==='search'){qi=$('#q');qi.value=S.q;qi.oninput=function(){S.q=qi.value;S.oi=-1;fillSearch();render()};fillSearch()}}
 function go(s,o){S.stack.push({s:S.scr,oi:S.oi});S.scr=s;S.oi=o||0;if(s==='settings'&&AN)S.perm=jx(function(){return Android.hasNotifAccess()},false);build();if(s==='search'){S.oi=-1;fillSearch();setTimeout(focusQ,80)}}
 function back(){var p=S.stack.pop();
+if(S.scr==='drawer'){S.manage=false;S.pick=false}
+if(S.scr==='dockedit')S.grab=false;
+if(S.scr==='upload'&&AN)jx(function(){Android.stopUpload()});
 if(p){if(S.scr==='search'){S.q='';if(qi)qi.blur()}S.scr=p.s;S.oi=p.oi;build()}
 else if(S.ed){order(S.snap.a,S.snap.i);S.ed=false}
 else if(S.z==='t'||S.z==='n')S.z='d';else S.i=0}
-function rst(){jx(function(){localStorage.removeItem(KEY)});S.set=Object.assign({},DEF);S.cus=Object.assign({},CUS0);S.dim=0;S.wp=2;S.photo=false;S.wpData='';dock=orig.slice();rebuildDock();S.stack=[];S.scr='home';S.z='d';S.ed=false;applyWp();applyCus();tick()}
+function rst(){jx(function(){localStorage.removeItem(KEY)});S.set=Object.assign({},DEF);S.cus=Object.assign({},CUS0);S.dim=0;S.wp=2;S.photo=false;S.img=false;S.wpData='';S.manage=false;S.pick=false;dock=orig.slice();rebuildDock();S.stack=[];S.scr='home';S.z='d';S.ed=false;applyWp();applyCus();tick()}
 function setAct(){var r=settingsRows()[S.oi],k=r[0];
 if(r[2]==='t')S.set[k]=!S.set[k];
 else if(k==='dim')S.dim=(S.dim+1)%3;
 else if(k==='cus'){go('custom');return}
 else if(k==='wps'){go('studio',activeIdx());return}
 else if(k==='tvs'){tvSettings();return}
-else if(k==='nac'){if(S.perm)toast('Already on');else{var x=AN?jx(function(){return Android.openNotifAccess()},'err'):'err';if(x!=='ok')toast("This TV doesn't show that screen. Tell Claude")}return}
+else if(k==='nac'){if(S.perm)toast('Already on');else{var x=AN?jx(function(){return Android.openNotifAccess()},'err'):'err';if(x!=='ok')toast('Try TV settings > Apps > Special app access > Notification access')}return}
 else if(k==='reset'){dock=orig.slice();rebuildDock();toast('Dock reset')}
 else if(k==='rst'){rst();toast('Launcher reset');return}
 applyWp();applyCus();save();build();tick()}
 function cusAct(){var k=CR[S.oi][0];
+if(k==='edit'){S.grab=false;go('dockedit');return}
+if(k==='manage'){S.manage=true;go('drawer');return}
 if(k==='tint')S.cus.tint=(S.cus.tint+1)%TINT.length;
 else if(k==='dsi')S.cus.dsi=(S.cus.dsi+1)%3;
 else if(k==='rd')S.cus.rd=S.cus.rd?0:1;
@@ -266,17 +278,19 @@ function studioScan(){
 if(!AN){toast('Photos work in the TV app');return}
 if(!jx(function(){return Android.hasPhotoPerm()},false)){toast('Allow photo access on the TV');Android.requestPhotoPerm();return}
 S.photos=jx(function(){return JSON.parse(Android.getPhotos())},[]);
-if(!S.photos.length){toast('No photos found. Send one with Send Files To TV');return}
-toast(S.photos.length+' photos found');S.oi=2+P.length;build();loadThumbs(0)}
+if(!S.photos.length){toast('No photos found. Use Send from phone instead');return}
+toast(S.photos.length+' photos found');S.oi=base()+P.length;build();loadThumbs(0)}
 window.onPhotoPerm=function(){if(S.scr==='studio'&&AN&&jx(function(){return Android.hasPhotoPerm()},false)){studioScan();render()}};
-function loadThumbs(k){if(k>=S.photos.length||S.scr!=='studio')return;var p=S.photos[k];p.th=jx(function(){return Android.getThumb(String(p.id))},'');var el=document.querySelector('.th[data-id="'+p.id+'"]');if(el&&p.th)el.style.background='#222 url('+p.th+') center/cover';if(k===S.oi-2-P.length)render();setTimeout(function(){loadThumbs(k+1)},25)}
-function studioPhone(){var sf=A.filter(function(a){return /send files/i.test(a.n)})[0];if(sf&&AN){toast('Send a photo from your phone, then come back');realLaunch(sf)}else toast('Open Send Files To TV on your phone and TV, send a photo, then pick From TV storage')}
-function setImg(x){toast('Applying…');setTimeout(function(){var u=jx(function(){return Android.saveWallpaper(String(x.id))},'');if(u){S.wpData=u;S.photo=true;S.wpId=x.id;applyWp();save();render();toast('Wallpaper applied')}else toast("Couldn't load that photo")},40)}
+function loadThumbs(k){if(k>=S.photos.length||S.scr!=='studio')return;var p=S.photos[k];p.th=jx(function(){return Android.getThumb(String(p.id))},'');var el=document.querySelector('.th[data-id="'+p.id+'"]');if(el&&p.th)el.style.background='#222 url('+p.th+') center/cover';if(k===S.oi-base()-P.length)render();setTimeout(function(){loadThumbs(k+1)},25)}
+function studioPhone(){if(!AN){toast('Works in the TV app');return}var u=jx(function(){return Android.startUpload()},'');if(!u){toast("Couldn't start. Is the TV on Wi-Fi?");return}S.upUrl=u;go('upload')}
+window.onUpload=function(){if(S.scr!=='upload')return;var d=jx(function(){return Android.getWallpaper()},'');if(!d){toast('That photo failed. Try again');return}S.wpData=d;S.photo=true;S.img=true;S.wpId='phone';applyWp();save();back();S.oi=2;toast('Wallpaper applied');render()};
+function setImg(x){toast('Applying…');setTimeout(function(){var u=jx(function(){return Android.saveWallpaper(String(x.id))},'');if(u){S.wpData=u;S.photo=true;S.img=true;S.wpId=x.id;applyWp();save();render();toast('Wallpaper applied')}else toast("Couldn't load that photo")},40)}
 function studioPress(k){var it=sitems();
 if(k==='l'||k==='r')S.oi=clamp(S.oi+(k==='l'?-1:1),0,it.length-1);
 else if(k==='ok'){var x=it[S.oi];
  if(x.k==='tv')studioScan();else if(x.k==='ph')studioPhone();
  else if(x.k==='p'){S.photo=false;S.wp=x.i;applyWp();save();toast('Wallpaper applied')}
+ else if(x.k==='cur'){S.photo=true;S.wpId='phone';applyWp();save();toast('Wallpaper applied')}
  else if(x.k==='img')setImg(x)}}
 function home(k){
 if(S.ed){if(k==='l')mv(-1);else if(k==='r')mv(1);else if(k==='ok'){S.ed=false;save()}return}
@@ -293,6 +307,12 @@ else if(k==='ok'){
  else if(S.z==='n'){if(S.np&&AN){jx(function(){Android.mediaControl('toggle')});setTimeout(npPoll,500)}}
  else if(dock[S.i]===APPS)go('drawer');
  else if(realLaunch(dock[S.i])){}else{S.app=dock[S.i];go('app')}}}
+function dockPress(k){var rl=dock.length-1;
+if(k==='u'||k==='d'){var d=k==='u'?-1:1,j=S.oi+d;
+ if(S.grab&&S.oi<rl){if(j>=0&&j<rl){var a=dock.slice(),t=a[S.oi];a[S.oi]=a[j];a[j]=t;dock=a;rebuildDock();S.oi=j;build()}}
+ else S.oi=clamp(j,0,rl)}
+else if(k==='ok'){if(S.oi===rl){if(rl>=6)toast('Dock is full. Remove one first');else{S.pick=true;go('drawer')}}else{S.grab=!S.grab;if(!S.grab)save();build()}}
+else if(k==='hold'){if(S.oi<rl){if(rl<=2){toast('Keep at least 2 apps');return}var nm=dock[S.oi].n;dock.splice(S.oi,1);rebuildDock();save();S.grab=false;S.oi=clamp(S.oi,0,dock.length-1);toast('Removed '+nm);build()}}}
 function press(k){var s=S.scr;
 if(k==='b')back();
 else if(s==='home')home(k);
@@ -300,17 +320,21 @@ else if(s==='drawer'){
  if(k==='l'||k==='r')S.oi=clamp(S.oi+(k==='l'?-1:1),0,A.length-1);
  else if(k==='u'||k==='d')S.oi=clamp(S.oi+(k==='u'?-5:5),0,A.length-1);
  else if(k==='hold'){S.app=A[S.oi];go('menu',0)}
- else if(k==='ok'){if(!realLaunch(A[S.oi])){S.app=A[S.oi];go('app')}}}
+ else if(k==='ok'){var ap=A[S.oi];
+  if(S.pick){if(dock.indexOf(ap)>-1)toast('Already in the dock');else{dock.splice(dock.length-1,0,ap);rebuildDock();save();toast('Added '+ap.n);back()}}
+  else if(S.manage){S.app=ap;go('menu',0)}
+  else if(!realLaunch(ap)){S.app=ap;go('app')}}}
 else if(s==='settings'||s==='custom'||s==='menu'){var n=(s==='settings'?settingsRows():s==='custom'?CR:menuRows()).length-1;
  if(k==='u'||k==='d')S.oi=clamp(S.oi+(k==='u'?-1:1),0,n);
  else if(k==='ok'){if(s==='settings')setAct();else if(s==='custom')cusAct();else menuAct()}}
+else if(s==='dockedit')dockPress(k);
 else if(s==='search')searchPress(k);
 else if(s==='studio')studioPress(k);
 else if(s==='app'){if(k==='ok')back()}
 render()}
 function render(){var s=S.scr;
 $('#home').classList.toggle('hide',s!=='home');
-['drawer','settings','custom','menu','search','studio','app'].forEach(function(id){$('#'+id).classList.toggle('on',s===id)});
+['drawer','settings','custom','menu','dockedit','upload','search','studio','app'].forEach(function(id){$('#'+id).classList.toggle('on',s===id)});
 var hm=s==='home';
 tiles.forEach(function(t,k){t.classList.toggle('f',hm&&S.z==='d'&&k===S.i)});
 tops.forEach(function(t,k){t.classList.toggle('f',hm&&S.z==='t'&&k===S.t)});
@@ -318,13 +342,13 @@ $('#np').classList.toggle('f',hm&&S.z==='n');
 $('#dock').classList.toggle('ed',S.ed);
 $('#lab').textContent=S.ed?'← → move · OK drop · Back cancel':(S.z==='t'?['Search','TV settings','Settings'][S.t]:'');
 if(s==='drawer'){document.querySelectorAll('#drawer .tile').forEach(function(c,k){c.classList.toggle('f',k===S.oi)});var gd=$('#drawer .gd');if(gd)gd.style.transform='translateY('+(-Math.max(0,Math.floor(S.oi/5)-1)*272)+'px)'}
-if(s==='settings'||s==='custom'||s==='menu'||s==='search')document.querySelectorAll('#'+s+' .row').forEach(function(r,k){r.classList.toggle('f',k===S.oi)});
+if(s==='settings'||s==='custom'||s==='menu'||s==='search'||s==='dockedit')document.querySelectorAll('#'+s+' .row').forEach(function(r,k){r.classList.toggle('f',k===S.oi)});
 if(s==='search'&&qi)qi.classList.toggle('f',S.oi===-1);
 if(s==='studio'){var it=sitems(),w=it[Math.min(S.oi,it.length-1)];$('.strip').style.transform='translateX('+(-S.oi*316)+'px)';
- document.querySelectorAll('.th').forEach(function(t,k){var x=it[k];t.classList.toggle('f',k===S.oi);t.classList.toggle('ac',(x.k==='p'&&!S.photo&&x.i===S.wp)||(x.k==='img'&&S.photo&&String(x.id)===String(S.wpId)))});
- var pb=curBg;if(w.k==='p')pb=w.css;else if(w.k==='img')pb=(S.photo&&String(S.wpId)===String(w.id)&&S.wpData)?'url('+S.wpData+') center/cover':(w.th?'url('+w.th+') center/cover':'#222');
+ document.querySelectorAll('.th').forEach(function(t,k){var x=it[k];t.classList.toggle('f',k===S.oi);t.classList.toggle('ac',(x.k==='cur'&&S.photo&&String(S.wpId)==='phone')||(x.k==='p'&&!S.photo&&x.i===S.wp)||(x.k==='img'&&S.photo&&String(x.id)===String(S.wpId)))});
+ var pb=curBg;if(w.k==='p')pb=w.css;else if(w.k==='cur')pb='url('+S.wpData+') center/cover';else if(w.k==='img')pb=(S.photo&&String(S.wpId)===String(w.id)&&S.wpData)?'url('+S.wpData+') center/cover':(w.th?'url('+w.th+') center/cover':'#222');
  $('#pvb').style.background=pb;$('#pvs').style.opacity=DIMV[S.dim];$('#pk').textContent=$('#ct').textContent;$('#pk').style.display=S.set.clock?'':'none';
- $('#wl').textContent=w.k==='tv'?'From TV storage · OK to browse photos':w.k==='ph'?'Send from phone · OK for steps':w.n+((w.k==='p'&&!S.photo&&w.i===S.wp)||(w.k==='img'&&S.photo&&String(w.id)===String(S.wpId))?' · Active':' · OK to apply')}
+ $('#wl').textContent=w.k==='tv'?'From TV storage · OK to browse photos':w.k==='ph'?'Send from phone · OK to get the link':w.n+((w.k==='cur'&&S.photo&&String(S.wpId)==='phone')||(w.k==='p'&&!S.photo&&w.i===S.wp)||(w.k==='img'&&S.photo&&String(w.id)===String(S.wpId))?' · Active':' · OK to apply')}
 $('#clock').style.display=S.set.clock?'flex':'none';
 document.body.classList.toggle('rm',S.set.rm)}
 $('#stage').onclick=function(e){var el=e.target.closest('[data-k]');if(!el)return;var k=el.dataset.k,i=+el.dataset.i;
@@ -350,7 +374,9 @@ document.addEventListener('keyup',function(e){if(e.key!=='Enter')return;clearTim
 function wtxt(c){return c===0?'Clear':c<=2?'Partly cloudy':c===3?'Cloudy':c<=48?'Fog':c<=57?'Drizzle':c<=67?'Rain':c<=77?'Snow':c<=82?'Showers':'Storm'}
 function tick(){var d=new Date();$('#ct').textContent=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',hour12:!S.set.h24});$('#cdt').textContent=d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'short'});
 var wx=$('.cwx');if(S.set.weather&&W){wx.style.display='flex';$('#cwi').innerHTML=ic(W.c<=1?'sun':'cloud',26);$('#cwt').textContent=W.t+'°C · '+wtxt(W.c)}else wx.style.display='none'}
-function loadWeather(){if(!window.fetch)return;fetch('https://api.open-meteo.com/v1/forecast?latitude=-1.2864&longitude=36.8172&current=temperature_2m,weather_code').then(function(r){return r.json()}).then(function(j){W={t:Math.round(j.current.temperature_2m),c:j.current.weather_code};tick()}).catch(function(){})}
+function setW(j){try{W={t:Math.round(j.current.temperature_2m),c:j.current.weather_code};tick()}catch(e){}}
+window.onWeather=function(t){try{if(t)setW(JSON.parse(t))}catch(e){}};
+function loadWeather(){if(AN&&jx(function(){Android.requestWeather();return 1},0))return;if(!window.fetch)return;fetch('https://api.open-meteo.com/v1/forecast?latitude=-1.2864&longitude=36.8172&current=temperature_2m,weather_code').then(function(r){return r.json()}).then(setW).catch(function(){setTimeout(loadWeather,30000)})}
 function setNp(m,n){S.np=m;S.notes=n||[];var on=!!(m||S.notes.length),el=$('#np');el.classList.toggle('on',on);
 $('.npm').style.display=m?'flex':'none';
 if(m){if(m.k!==S.npKey){S.npKey=m.k;S.npTry=0;S.npArt=''}
@@ -360,11 +386,11 @@ var nb=$('#npx');if(S.notes.length){nb.style.display='block';var x=S.notes[0];nb
 if(!on&&S.z==='n')S.z='d';render()}
 function npPoll(){if(!AN||!S.set.np){if($('#np').classList.contains('on'))setNp(null,[]);return}
 var d=jx(function(){return JSON.parse(Android.getNowPlaying())},null);if(!d)return;S.perm=!!d.perm;setNp(d.m||null,d.n||[])}
-window.goHome=function(){S.stack=[];S.scr='home';S.z='d';S.ed=false;if(qi)qi.blur();render()};
+window.goHome=function(){if(S.scr==='upload'&&AN)jx(function(){Android.stopUpload()});S.manage=false;S.pick=false;S.grab=false;S.stack=[];S.scr='home';S.z='d';S.ed=false;if(qi)qi.blur();render()};
 var TV=/\bwv\b/.test(navigator.userAgent)||/[?&]tv=1/.test(location.search);if(TV)document.body.classList.add('tv');
 var w0=$('#wrap'),st=$('#stage');function fit(){var s;if(TV){s=Math.min(innerWidth/1920,innerHeight/1080);w0.style.width=(1920*s)+'px'}else s=w0.clientWidth/1920;st.style.transform='scale('+s+')';w0.style.height=(1080*s)+'px'}
 addEventListener('resize',fit);new ResizeObserver(fit).observe(w0);fit();
-if(S.photo){S.wpData=jx(function(){return Android.getWallpaper()},'');if(!S.wpData)S.photo=false}
+if(S.img){S.wpData=jx(function(){return Android.getWallpaper()},'');if(!S.wpData){S.img=false;S.photo=false}}
 $('#npb').innerHTML=ic('prev',44);$('#npf').innerHTML=ic('next',44);
 rebuildDock();applyWp();applyCus();tick();loadWeather();render();npPoll();
 setInterval(tick,30000);setInterval(loadWeather,1800000);setInterval(npPoll,2500);
