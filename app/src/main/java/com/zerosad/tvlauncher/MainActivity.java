@@ -141,6 +141,14 @@ public class MainActivity extends Activity {
                 null);
             return true;
         }
+        String mk = null;
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) mk = "toggle";
+        else if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) mk = "next";
+        else if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) mk = "prev";
+        if (mk != null) {
+            web.evaluateJavascript("window.mk&&mk('" + mk + "')", null);
+            return true;
+        }
         return super.onKeyDown(keyCode, event);
     }
 
@@ -487,20 +495,51 @@ public class MainActivity extends Activity {
             return root.toString();
         }
 
+        private String artKey = "";
+        private String artVal = "";
+
+        private Bitmap loadUri(String us) {
+            try {
+                if (us == null || us.length() == 0) return null;
+                InputStream is;
+                if (us.startsWith("http")) {
+                    HttpURLConnection hc = (HttpURLConnection) new URL(us).openConnection();
+                    hc.setConnectTimeout(5000);
+                    hc.setReadTimeout(5000);
+                    is = hc.getInputStream();
+                } else {
+                    is = getContentResolver().openInputStream(Uri.parse(us));
+                }
+                if (is == null) return null;
+                Bitmap r = BitmapFactory.decodeStream(is);
+                is.close();
+                return r;
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
         @JavascriptInterface
         public String getArt() {
             try {
                 MediaController c = activeController();
                 if (c == null) return "";
                 MediaMetadata md = c.getMetadata();
+                if (md == null) return "";
+                String key = md.getString(MediaMetadata.METADATA_KEY_TITLE) + "|" + md.getString(MediaMetadata.METADATA_KEY_ARTIST);
+                if (key.equals(artKey) && artVal.length() > 0) return artVal;
                 Bitmap b = md.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
                 if (b == null) b = md.getBitmap(MediaMetadata.METADATA_KEY_ART);
-                if (b == null) b = md.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON);
+                if (b == null) b = loadUri(md.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI));
+                if (b == null) b = loadUri(md.getString(MediaMetadata.METADATA_KEY_ART_URI));
+                if (b == null) b = loadUri(md.getString(MediaMetadata.METADATA_KEY_DISPLAY_ICON_URI));
                 if (b == null) return "";
                 int side = Math.min(b.getWidth(), b.getHeight());
                 Bitmap sq = Bitmap.createBitmap(b, (b.getWidth() - side) / 2, (b.getHeight() - side) / 2, side, side);
-                Bitmap sc = Bitmap.createScaledBitmap(sq, 360, 360, true);
-                return jpegUrl(sc, 85);
+                Bitmap sc = Bitmap.createScaledBitmap(sq, 300, 300, true);
+                artVal = jpegUrl(sc, 85);
+                artKey = key;
+                return artVal;
             } catch (Exception e) {
                 return "";
             }
@@ -656,7 +695,7 @@ public class MainActivity extends Activity {
                 public void run() {
                     String out = "";
                     try {
-                        URL u = new URL("https://api.open-meteo.com/v1/forecast?latitude=-1.2864&longitude=36.8172&current=temperature_2m,weather_code");
+                        URL u = new URL("https://api.open-meteo.com/v1/forecast?latitude=-1.2833&longitude=36.9&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5");
                         HttpURLConnection c = (HttpURLConnection) u.openConnection();
                         c.setConnectTimeout(8000);
                         c.setReadTimeout(8000);
